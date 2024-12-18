@@ -1,0 +1,21 @@
+#!/bin/bash
+
+handle_error() {
+    echo "updateall error: $1"
+    exit 1
+}
+
+# update flatpaks
+echo "checking for flatpak updates..."
+flatpak update -y || handle_error "flatpak update failed!"
+
+# run paru (checks for both pacman and aur packages)
+echo "running paru..."
+paru || handle_error "paru update failed!"
+# sudo pacman -Syu || handle_error "pacman update failed!"
+
+# update snap packages
+echo "checking for snap updates..."
+sudo snap refresh || handle_error "snap refresh failed!"
+
+echo "updateall finished"
