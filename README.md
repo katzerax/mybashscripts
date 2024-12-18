@@ -1,2 +1,4 @@
 # mybashscripts
-small collection of my personal bash scripts
+my personal bash scripts
+
+i put them in `/usr/local/bin/`
