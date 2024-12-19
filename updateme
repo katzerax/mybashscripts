@@ -1,23 +1,23 @@
 #!/bin/bash
 
 handle_error() {
-    echo -e "\e[31mupdateall error:\e[0m $1"
+    echo -e "\e[31mupdateme error:\e[0m $1"
     exit 1
 }
- 
-pfx="\e[32mUA\e[0m"
- 
-# update flatpaks
-echo -e "$pfx checking for flatpak updates..."
-flatpak update -y || handle_error "flatpak update failed!"
+
+pfx="\e[32mUM\e[0m"
 
 # run paru (checks for both pacman and aur packages)
 echo -e "$pfx running paru..."
 paru || handle_error "paru update failed!"
 # sudo pacman -Syu || handle_error "pacman update failed!"
 
+# update flatpaks
+echo -e "$pfx checking for flatpak updates..."
+flatpak update || handle_error "flatpak update failed!"
+
 # update snap packages
 echo -e "$pfx checking for snap updates..."
 sudo snap refresh || handle_error "snap refresh failed!"
 
-echo -e "\e[32mupdateall finished\e[0m"
+echo -e "\e[32mupdateme finished\e[0m"
