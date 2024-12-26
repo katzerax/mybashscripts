@@ -3,7 +3,6 @@
 MOD_DIR="/home/k/.local/share/multimc/instances/1.8.9/.minecraft/mods"
 REPO_URL="https://github.com/hannibal002/SkyHanni/releases"
 RELEASES_API="https://api.github.com/repos/hannibal002/SkyHanni/releases"
-
 LOCAL_MOD_FILE=$(ls "$MOD_DIR" | grep -E '^SkyHanni-mc1\.8\.9-.*\.jar$')
 
 if [ -z "$LOCAL_MOD_FILE" ]; then
@@ -22,12 +21,10 @@ download_latest_release() {
   local tag=$1
   local asset_url=$(curl -s "$RELEASES_API" | jq -r ".[] | select(.tag_name==\"$tag\") | .assets[0].browser_download_url")
   local output_path="$MOD_DIR/SkyHanni-mc1.8.9-$tag.jar"
-
   if [ -z "$asset_url" ]; then
     echo "couldn't find download url for version $tag."
     exit 1
   fi
-
   echo "downloading version $tag..."
   curl -L -o "$output_path" "$asset_url"
 }
@@ -38,15 +35,11 @@ if [ -z "$LATEST_VERSION" ]; then
   echo "failed to fetch latest release from $RELEASES_API."
   exit 1
 fi
-
 if [ "$LOCAL_VERSION" != "$LATEST_VERSION" ]; then
   echo "new version found: $LATEST_VERSION. updating!"
-
   download_latest_release "$LATEST_VERSION"
-
-  echo "deleting old version $LOCAL_MOD_FILE..."
+  echo "deleting old version $LOCAL_MOD_FILE."
   rm -f "$LOCAL_MOD_PATH"
-
   echo "updated to $LATEST_VERSION."
 else
   echo "you're running the latest version: $LOCAL_VERSION."
