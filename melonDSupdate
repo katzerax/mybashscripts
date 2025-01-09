@@ -1,0 +1,47 @@
+#!/bin/bash
+
+METADATA_FILE="$HOME/Applications/melonDS/metadata"
+CURRENT_VERSION=$(grep 'version=' "$METADATA_FILE" | cut -d'=' -f2)
+RELEASES_URL=$(grep 'releasesurl=' "$METADATA_FILE" | cut -d'=' -f2)
+DOWNLOAD_URL=$(grep 'downloadurl=' "$METADATA_FILE" | cut -d'=' -f2)
+LATEST_RELEASE=$(curl -s "$RELEASES_URL")
+LATEST_VERSION=$(echo "$LATEST_RELEASE" | jq -r '.tag_name')
+
+if [[ "$CURRENT_VERSION" != "$LATEST_VERSION" ]]; then
+    echo "update found! current version: $CURRENT_VERSION, latest version: $LATEST_VERSION"
+    echo "downloading..."
+    wget -q "$DOWNLOAD_URL" -O "$HOME/Downloads/melonDS-update.zip"
+    echo "extracting..."
+    unzip -q "$HOME/Downloads/melonDS-update.zip" -d "$HOME/Applications/melonDS/"
+    rm "$HOME/Downloads/melonDS-update.zip"
+    echo "updating metadata version..."
+    sed -i "s/version=$CURRENT_VERSION/version=$LATEST_VERSION/" "$METADATA_FILE"
+
+    LOCAL_SHARE_APP_DIR=$(eval echo $(grep 'localshareappdir=' "$METADATA_FILE" | cut -d'=' -f2))
+    DESKTOP_DIR=$(eval echo $(grep 'desktopdir=' "$METADATA_FILE" | cut -d'=' -f2))
+    update_desktop_version() {
+        local desktop_file="$1"
+        local version="$2"
+        if [ -f "$desktop_file" ]; then
+            echo "updating .desktop file ($desktop_file)..."
+            if grep -q '^Version=' "$desktop_file"; then
+                sed -i "s/^Version=[^ ]*/Version=$version/" "$desktop_file"
+            else
+                echo "Version=$version" | cat - "$desktop_file" > temp && mv temp "$desktop_file"
+            fi
+        else
+            echo ".desktop file $desktop_file not found."
+        fi
+    }
+    update_desktop_version "$LOCAL_SHARE_APP_DIR" "$LATEST_VERSION"
+    update_desktop_version "$DESKTOP_DIR" "$LATEST_VERSION"
+
+    echo "successfully updated melonDS to $LATEST_VERSION"
+    echo "the following files have been updated accordingly:"
+    echo "- version updated in metadata file: $METADATA_FILE"
+    echo "- version updated in local desktop file: $LOCAL_SHARE_APP_DIR"
+    echo "- version updated in desktop shortcut: $DESKTOP_DIR"
+
+else
+    echo "you are already on the latest version: $CURRENT_VERSION."
+fi

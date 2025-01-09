@@ -17,7 +17,18 @@ echo -e "$pfx checking for flatpak updates..."
 flatpak update || handle_error "flatpak update failed!"
 
 # update snap packages
-echo -e "$pfx checking for snap updates..."
-sudo snap refresh || handle_error "snap refresh failed!"
+# echo -e "$pfx checking for snap updates..."
+# snap refresh || handle_error "snap refresh failed!"
 
+# update skyhanni mod
+echo -e "$pfx running skyhanni updater..."
+skyhanni
+
+# update melonDS
+echo -e "$pfx running melonDS updater..."
+melonDSupdate
+
+
+
+# finished
 echo -e "\e[32mupdateme finished\e[0m"
