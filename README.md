@@ -1,4 +1,4 @@
 # mybashscripts
 my personal bash scripts
 
-i put them in `/usr/local/bin/`
+this is basically just my  `/usr/local/bin/`
