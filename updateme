@@ -20,9 +20,9 @@ flatpak update || handle_error "flatpak update failed!"
 # echo -e "$pfx checking for snap updates..."
 # snap refresh || handle_error "snap refresh failed!"
 
-# update skyhanni mod
-echo -e "$pfx running skyhanni updater..."
-skyhanni
+# update skyblock mods
+echo -e "$pfx running skyblock mods updater..."
+modupdater
 
 # update melonDS
 echo -e "$pfx running melonDS updater..."
