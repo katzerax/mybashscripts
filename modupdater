@@ -27,7 +27,7 @@ get_latest_tag() {
   fi
 }
 
-download_release_asset() {
+download_release() {
   local mod_name=$1
   local repo=$2
   local tag=$3
@@ -97,7 +97,7 @@ process_mod() {
     echo "Update found for $name: $local_version -> $latest_version"
     echo "Deleting old version: $local_file"
     if rm -f "$MOD_DIR/$local_file"; then
-      if download_release_asset "$name" "$repo" "$latest_tag"; then
+      if download_release "$name" "$repo" "$latest_tag"; then
         echo "Updated $name to version $latest_version."
       else
         echo "ERROR: Failed to update $name."
